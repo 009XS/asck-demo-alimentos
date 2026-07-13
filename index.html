@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Tradición — Panadería, Cafetería y Repostería Local (Demo Conceptual)</title>
+  
+  <!-- SEO & Meta Tags -->
+  <meta name="description" content="Propuesta de presencia digital y menú interactivo para La Tradición. Pan recién horneado, repostería fina y el mejor café de Huixquilucan Centro.">
+  <link rel="icon" type="image/png" href="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=32">
+
+  <!-- Google Fonts: Great Vibes, Dancing Script & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            tradicion: {
+              cream: '#FAF6F0',
+              arena: '#F5EFE6',
+              espresso: '#3C2A21',
+              coffee: '#4F3B32',
+              caramel: '#D4A373',
+              terracotta: '#E76F51',
+              gold: '#E9C46A',
+              olive: '#8B9A47',
+              cinnamon: '#C08261'
+            }
+          },
+          fontFamily: {
+            serif: ['Great Vibes', 'cursive'],
+            logo: ['Great Vibes', 'cursive'],
+            script: ['Dancing Script', 'cursive'],
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .font-logo {
+      font-family: 'Great Vibes', cursive;
+    }
+    .font-script {
+      font-family: 'Dancing Script', cursive;
+    }
+
+    /* Global headings overrides for brand script identity */
+    h1, h2 {
+      font-family: 'Great Vibes', cursive;
+      font-weight: normal !important;
+    }
+    h3, .font-serif {
+      font-family: 'Dancing Script', cursive !important;
+      font-weight: bold !important;
+    }
+    .font-logo, h1.font-logo {
+      font-family: 'Great Vibes', cursive !important;
+      font-weight: normal !important;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FAF6F0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D4A373;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4F3B32;
+    }
+
+    /* Custom grain texture overlay to add premium warmth */
+    .bg-grain {
+      position: relative;
+    }
+    .bg-grain::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0.02;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Scroll animations classes */
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      visibility: hidden;
+    }
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+
+    /* Map height restriction */
+    #map {
+      height: 380px;
+      border-radius: 1rem;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="bg-tradicion-cream text-tradicion-coffee font-sans bg-grain min-h-screen selection:bg-tradicion-caramel selection:text-white pb-16 md:pb-0">
+
+  <!-- TOP DISCLAIMER BAR -->
+  <div class="bg-tradicion-espresso text-tradicion-cream py-2 px-4 text-xs md:text-sm text-center font-medium border-b border-tradicion-caramel/20 z-50 relative">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-2 flex-wrap">
+      <span class="inline-block bg-tradicion-caramel text-tradicion-espresso text-[10px] uppercase font-bold px-2 py-0.5 rounded">Demo Conceptual</span>
+      <span>Imágenes de referencia. En la versión final se reemplazarán por fotos reales del negocio y sus productos.</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header id="main-header" class="sticky top-0 z-40 bg-tradicion-cream/80 backdrop-blur-md border-b border-tradicion-arena/60 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo -->
+        <a href="#inicio" class="flex flex-col justify-center items-start group">
+          <div class="flex items-center gap-1">
+            <!-- Flourish Left (small) -->
+            <svg class="w-5 h-3 text-tradicion-caramel" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M5,5 C15,2 25,8 35,5 C40,3.5 42,6 45,5" />
+              <path d="M8,10 C18,7 28,13 38,10 C41,8.5 42,11 45,10" opacity="0.8"/>
+              <path d="M12,15 C22,12 32,18 40,15 C42,13.5 43,16 45,15" opacity="0.6"/>
+            </svg>
+            <span class="font-logo text-3xl font-bold tracking-tight text-tradicion-espresso">La Tradición</span>
+            <!-- Flourish Right (small) -->
+            <svg class="w-5 h-3 text-tradicion-caramel transform scale-x-[-1]" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M5,5 C15,2 25,8 35,5 C40,3.5 42,6 45,5" />
+              <path d="M8,10 C18,7 28,13 38,10 C41,8.5 42,11 45,10" opacity="0.8"/>
+              <path d="M12,15 C22,12 32,18 40,15 C42,13.5 43,16 45,15" opacity="0.6"/>
+            </svg>
+          </div>
+          <span class="block text-[8px] tracking-[0.12em] uppercase text-tradicion-coffee/75 font-semibold pl-5 -mt-1 leading-none">panadería — repostería — bocadillos</span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-8">
+          <a href="#inicio" class="text-tradicion-coffee hover:text-tradicion-terracotta font-medium text-sm transition-colors">Inicio</a>
+          <a href="#esencia" class="text-tradicion-coffee hover:text-tradicion-terracotta font-medium text-sm transition-colors">Esencia</a>
+          <a href="#menu-interactivo" class="text-tradicion-coffee hover:text-tradicion-terracotta font-medium text-sm transition-colors">Menú</a>
+          <a href="#destacados" class="text-tradicion-coffee hover:text-tradicion-terracotta font-medium text-sm transition-colors">Destacados</a>
+          <a href="#galeria" class="text-tradicion-coffee hover:text-tradicion-terracotta font-medium text-sm transition-colors">Galería</a>
+          <a href="#ubicacion" class="text-tradicion-coffee hover:text-tradicion-terracotta font-medium text-sm transition-colors">Ubicación</a>
+        </nav>
+
+        <!-- CTA Action -->
+        <div class="hidden md:flex items-center gap-4">
+          <a href="https://wa.me/525582841488?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
+             target="_blank" 
+             class="inline-flex items-center gap-2 bg-[#25D366]/90 hover:bg-[#128C7E] text-white px-5 py-2.5 rounded-full font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 duration-200">
+            <i class="fa-brands fa-whatsapp text-lg"></i>
+            <span>Pedir por WhatsApp</span>
+          </a>
+        </div>
+
+        <!-- Mobile Hamburguer Button -->
+        <div class="flex md:hidden">
+          <button id="mobile-menu-btn" type="button" class="text-tradicion-espresso hover:text-tradicion-terracotta p-2 focus:outline-none" aria-label="Abrir menú">
+            <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden bg-tradicion-cream border-b border-tradicion-arena px-4 pt-2 pb-6 space-y-3 transition-all duration-300">
+      <a href="#inicio" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg text-base font-medium text-tradicion-espresso hover:bg-tradicion-arena/50 transition-colors">Inicio</a>
+      <a href="#esencia" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg text-base font-medium text-tradicion-espresso hover:bg-tradicion-arena/50 transition-colors">Esencia</a>
+      <a href="#menu-interactivo" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg text-base font-medium text-tradicion-espresso hover:bg-tradicion-arena/50 transition-colors">Menú</a>
+      <a href="#destacados" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg text-base font-medium text-tradicion-espresso hover:bg-tradicion-arena/50 transition-colors">Destacados</a>
+      <a href="#galeria" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg text-base font-medium text-tradicion-espresso hover:bg-tradicion-arena/50 transition-colors">Galería</a>
+      <a href="#ubicacion" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg text-base font-medium text-tradicion-espresso hover:bg-tradicion-arena/50 transition-colors">Ubicación</a>
+      <div class="pt-4 border-t border-tradicion-arena/60">
+        <a href="https://wa.me/525582841488?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
+           target="_blank" 
+           class="flex items-center justify-center gap-2 bg-[#25D366] text-white px-5 py-3 rounded-xl font-medium shadow-md">
+          <i class="fa-brands fa-whatsapp text-lg"></i>
+          <span>Pedir por WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section id="inicio" class="relative overflow-hidden pt-10 pb-20 md:py-32 flex items-center bg-gradient-to-b from-tradicion-cream via-tradicion-cream to-tradicion-arena/40">
+    
+    <!-- Background subtle vector elements -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+      <svg class="absolute top-10 right-0 w-96 h-96 text-tradicion-caramel" viewBox="0 0 100 100" fill="currentColor">
+        <path d="M50,0 C22.4,0 0,22.4 0,50 C0,77.6 22.4,100 50,100 C77.6,100 100,77.6 100,50 C100,22.4 77.6,0 50,0 Z M50,90 C27.9,90 10,72.1 10,50 C10,27.9 27.9,10 50,10 C72.1,10 90,27.9 90,50 C90,72.1 72.1,90 50,90 Z" />
+      </svg>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Hero Text -->
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          
+          <!-- Main calligraphic logo display in Hero -->
+          <div class="flex flex-col items-center lg:items-start mb-6">
+            <div class="flex items-center gap-3">
+              <!-- Flourish Left (medium) -->
+              <svg class="w-8 h-4 text-tradicion-caramel" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <path d="M5,5 C15,2 25,8 35,5 C40,3.5 42,6 45,5" />
+                <path d="M8,10 C18,7 28,13 38,10 C41,8.5 42,11 45,10" opacity="0.8"/>
+                <path d="M12,15 C22,12 32,18 40,15 C42,13.5 43,16 45,15" opacity="0.6"/>
+              </svg>
+              <span class="font-logo text-5xl md:text-6xl font-bold text-tradicion-espresso tracking-normal leading-none select-none">La Tradición</span>
+              <!-- Flourish Right (medium) -->
+              <svg class="w-8 h-4 text-tradicion-caramel transform scale-x-[-1]" viewBox="0 0 50 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <path d="M5,5 C15,2 25,8 35,5 C40,3.5 42,6 45,5" />
+                <path d="M8,10 C18,7 28,13 38,10 C41,8.5 42,11 45,10" opacity="0.8"/>
+                <path d="M12,15 C22,12 32,18 40,15 C42,13.5 43,16 45,15" opacity="0.6"/>
+              </svg>
+            </div>
+            <span class="block text-xs tracking-[0.25em] uppercase text-tradicion-coffee/85 font-semibold pl-10 -mt-1 select-none">panadería — repostería — bocadillos</span>
+          </div>
+
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-tradicion-caramel/10 border border-tradicion-caramel/30 rounded-full text-tradicion-espresso text-xs font-semibold tracking-wider uppercase">
+            <i class="fa-solid fa-map-pin text-tradicion-terracotta"></i>
+            <span>Huixquilucan Centro / San Martín</span>
+          </div>
+
+          <h1 class="font-logo text-5xl sm:text-6xl lg:text-7xl text-tradicion-espresso leading-tight font-normal">
+            Pan, café y momentos que <span class="font-script text-tradicion-terracotta font-semibold">saben a casa</span>.
+          </h1>
+
+          <p class="text-base sm:text-lg text-tradicion-coffee max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
+            Propuesta de menú digital y presencia en línea premium para mostrar tus delicias, facilitar los pedidos a domicilio o en local y captar clientes directamente.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+            <a href="#menu-interactivo" 
+               class="inline-flex items-center justify-center px-8 py-4 bg-tradicion-espresso hover:bg-tradicion-coffee text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
+              <i class="fa-solid fa-utensils mr-2"></i>
+              <span>Explorar el Menú</span>
+            </a>
+            <a href="#contacto-pedido" 
+               class="inline-flex items-center justify-center px-8 py-4 bg-white border border-tradicion-caramel/30 hover:border-tradicion-caramel text-tradicion-espresso font-medium rounded-xl shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+              <i class="fa-brands fa-whatsapp text-lg mr-2 text-[#25D366]"></i>
+              <span>Consultar Pedido</span>
+            </a>
+          </div>
+
+          <!-- Quick Stats / Trust Indicators -->
+          <div class="grid grid-cols-3 gap-4 pt-6 border-t border-tradicion-arena max-w-md mx-auto lg:mx-0">
+            <div class="text-center lg:text-left">
+              <span class="block font-serif text-2xl font-bold text-tradicion-espresso">4.5<i class="fa-solid fa-star text-xs text-tradicion-gold ml-1"></i></span>
+              <span class="text-xs text-tradicion-coffee/75">Calificación Google</span>
+            </div>
+            <div class="text-center lg:text-left border-x border-tradicion-arena px-4">
+              <span class="block font-serif text-2xl font-bold text-tradicion-espresso">132+</span>
+              <span class="text-xs text-tradicion-coffee/75">Reseñas Reales</span>
+            </div>
+            <div class="text-center lg:text-left">
+              <span class="block font-serif text-2xl font-bold text-tradicion-espresso">100%</span>
+              <span class="text-xs text-tradicion-coffee/75">Familiar y Local</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Hero Graphic (Premium Frame Mockup) -->
+        <div class="lg:col-span-5 relative">
+          <!-- Decorative Glow Backdrop -->
+          <div class="absolute -inset-4 bg-tradicion-caramel/20 rounded-3xl blur-2xl opacity-70"></div>
+          
+          <!-- Image Collage -->
+          <div class="relative bg-white p-4 rounded-3xl shadow-2xl border border-tradicion-arena">
+            <div class="overflow-hidden rounded-2xl aspect-[4/3] relative group">
+              <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=800" 
+                   alt="Pan artesanal recién horneado de La Tradición" 
+                   class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+              
+              <!-- Floating label -->
+              <div class="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl border border-tradicion-arena shadow-md">
+                <span class="block text-[10px] tracking-wider uppercase text-tradicion-caramel font-bold">Tradición en cada pieza</span>
+                <span class="font-serif text-sm font-bold text-tradicion-espresso">Artesanal y Diario</span>
+              </div>
+            </div>
+            
+            <!-- Secondary Overlapping Card -->
+            <div class="absolute -bottom-6 -left-6 bg-tradicion-cream p-3 rounded-2xl shadow-xl border border-tradicion-caramel/20 max-w-[200px] hidden sm:block">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-tradicion-caramel/20 flex items-center justify-center text-tradicion-terracotta">
+                  <i class="fa-solid fa-mug-hot text-lg"></i>
+                </div>
+                <div>
+                  <span class="block text-xs font-semibold text-tradicion-espresso">Café Caliente</span>
+                  <span class="text-[10px] text-tradicion-coffee/80">Café de olla y espresso</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Third Overlapping Card -->
+            <div class="absolute -top-6 -right-6 bg-tradicion-espresso text-white p-3 rounded-2xl shadow-xl max-w-[180px] hidden sm:block">
+              <div class="text-center">
+                <span class="block text-[10px] tracking-widest uppercase text-tradicion-gold font-bold">Horneado Hoy</span>
+                <span class="font-serif text-xs italic">Prueba el sabor local</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ESENCIA SECTION -->
+  <section id="esencia" class="py-20 bg-white border-y border-tradicion-arena/60 fade-in-section">
+    <div class="max-w-4xl mx-auto px-4 text-center space-y-8">
+      <div class="w-12 h-12 rounded-full bg-tradicion-caramel/15 mx-auto flex items-center justify-center text-tradicion-cinnamon">
+        <i class="fa-solid fa-wheat-awn text-xl"></i>
+      </div>
+      
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-tradicion-espresso tracking-tight">
+        Pan caliente, café aromático y tradición local
+      </h2>
+      
+      <p class="text-lg sm:text-xl text-tradicion-coffee font-light leading-relaxed max-w-2xl mx-auto">
+        “Esta propuesta visual está diseñada para reflejar de manera profesional la calidez y el sabor familiar que define a <span class="font-semibold text-tradicion-espresso">La Tradición</span>. Centralizamos tu menú, tu ubicación y un canal rápido de WhatsApp en un solo lugar.”
+      </p>
+
+      <div class="pt-4 flex items-center justify-center gap-6 flex-wrap">
+        <div class="flex items-center gap-2 text-sm text-tradicion-coffee">
+          <i class="fa-solid fa-circle-check text-tradicion-olive"></i>
+          <span>Menú siempre a la mano</span>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-tradicion-coffee">
+          <i class="fa-solid fa-circle-check text-tradicion-olive"></i>
+          <span>Pedidos ágiles vía WhatsApp</span>
+        </div>
+        <div class="flex items-center gap-2 text-sm text-tradicion-coffee">
+          <i class="fa-solid fa-circle-check text-tradicion-olive"></i>
+          <span>Ubicación fácil de consultar</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU DIGITAL INTERACTIVE -->
+  <section id="menu-interactivo" class="py-20 bg-tradicion-cream relative fade-in-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+        <span class="text-xs uppercase font-bold tracking-widest text-tradicion-caramel block">Menú Referencial para Demo</span>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-tradicion-espresso">Explora Nuestro Menú</h2>
+        <div class="w-24 h-1 bg-tradicion-caramel mx-auto rounded-full"></div>
+        <p class="text-sm text-tradicion-coffee/80">
+          Nota: Los precios y disponibilidad son de referencia y están sujetos a confirmación por el establecimiento.
+        </p>
+      </div>
+
+      <!-- Categories Filter Tabs -->
+      <div class="flex flex-wrap justify-center gap-2 mb-12" id="menu-filters">
+        <button onclick="filterMenu('todos')" class="filter-btn active px-6 py-2.5 rounded-full text-sm font-semibold transition-all border border-tradicion-caramel/20 bg-tradicion-espresso text-white shadow-sm" data-category="todos">
+          Todos
+        </button>
+        <button onclick="filterMenu('pan-dulce')" class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold transition-all border border-tradicion-caramel/20 bg-white text-tradicion-espresso hover:bg-tradicion-arena/50" data-category="pan-dulce">
+          Pan Dulce
+        </button>
+        <button onclick="filterMenu('cafe')" class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold transition-all border border-tradicion-caramel/20 bg-white text-tradicion-espresso hover:bg-tradicion-arena/50" data-category="cafe">
+          Café y Bebidas
+        </button>
+        <button onclick="filterMenu('reposteria')" class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold transition-all border border-tradicion-caramel/20 bg-white text-tradicion-espresso hover:bg-tradicion-arena/50" data-category="reposteria">
+          Repostería
+        </button>
+        <button onclick="filterMenu('pasteles')" class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold transition-all border border-tradicion-caramel/20 bg-white text-tradicion-espresso hover:bg-tradicion-arena/50" data-category="pasteles">
+          Pasteles
+        </button>
+        <button onclick="filterMenu('especiales')" class="filter-btn px-6 py-2.5 rounded-full text-sm font-semibold transition-all border border-tradicion-caramel/20 bg-white text-tradicion-espresso hover:bg-tradicion-arena/50" data-category="especiales">
+          Temporada / Especiales
+        </button>
+      </div>
+
+      <!-- Menu Items Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="menu-items-grid">
+        
+        <!-- Item 1: Conchas -->
+        <div class="menu-card bg-white p-5 rounded-2xl shadow-md border border-tradicion-arena hover:shadow-lg transition-all duration-300" data-category="pan-dulce">
+          <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+            <img src="images/conchas_mexicanas.png" alt="Conchas Tradicionales" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="flex justify-between items-start gap-2 mb-2">
+            <h3 class="font-serif text-lg font-bold text-tradicion-espresso">Conchas Tradicionales</h3>
+            <span class="px-2 py-0.5 bg-tradicion-olive/10 text-tradicion-olive rounded text-[10px] font-bold uppercase shrink-0">Recomendado</span>
+          </div>
+          <p class="text-xs text-tradicion-coffee/80 leading-relaxed mb-4">
+            Deliciosa costra tradicional y masa esponjosa. Disponibles también en versión integral y chocolate tradicional.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-tradicion-arena/60">
+            <div>
+              <span class="text-xs text-tradicion-coffee/65 block">Precio de referencia</span>
+              <span class="font-bold text-tradicion-espresso">Desde $18 c/u</span>
+            </div>
+            <button onclick="selectProductForForm('Conchas Tradicionales')" class="text-xs font-semibold text-tradicion-terracotta hover:text-tradicion-cinnamon flex items-center gap-1">
+              Pedir <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Item 2: Café de Olla -->
+        <div class="menu-card bg-white p-5 rounded-2xl shadow-md border border-tradicion-arena hover:shadow-lg transition-all duration-300" data-category="cafe">
+          <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+            <img src="images/cafe_de_olla.png" alt="Café de Olla con Canela" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="flex justify-between items-start gap-2 mb-2">
+            <h3 class="font-serif text-lg font-bold text-tradicion-espresso">Café de Olla con Canela</h3>
+            <span class="px-2 py-0.5 bg-tradicion-caramel/20 text-tradicion-espresso rounded text-[10px] font-bold uppercase shrink-0">Favorito Local</span>
+          </div>
+          <p class="text-xs text-tradicion-coffee/80 leading-relaxed mb-4">
+            Café mexicano endulzado con piloncillo natural, canela en rama y preparado en olla de barro tradicional.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-tradicion-arena/60">
+            <div>
+              <span class="text-xs text-tradicion-coffee/65 block">Precio de referencia</span>
+              <span class="font-bold text-tradicion-espresso">Desde $35</span>
+            </div>
+            <button onclick="selectProductForForm('Café de Olla con Canela')" class="text-xs font-semibold text-tradicion-terracotta hover:text-tradicion-cinnamon flex items-center gap-1">
+              Pedir <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Item 3: Panqué de Elote -->
+        <div class="menu-card bg-white p-5 rounded-2xl shadow-md border border-tradicion-arena hover:shadow-lg transition-all duration-300" data-category="reposteria">
+          <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+            <img src="images/panque_de_elote.png" alt="Panqué Artesanal de Elote" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="flex justify-between items-start gap-2 mb-2">
+            <h3 class="font-serif text-lg font-bold text-tradicion-espresso">Panqué Artesanal de Elote</h3>
+            <span class="px-2 py-0.5 bg-tradicion-olive/10 text-tradicion-olive rounded text-[10px] font-bold uppercase shrink-0">Recién Horneado</span>
+          </div>
+          <p class="text-xs text-tradicion-coffee/80 leading-relaxed mb-4">
+            Panqué húmedo hecho de elote natural, receta familiar. Ideal para acompañar tu café de la tarde.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-tradicion-arena/60">
+            <div>
+              <span class="text-xs text-tradicion-coffee/65 block">Precio de referencia</span>
+              <span class="font-bold text-tradicion-espresso">Precio por confirmar</span>
+            </div>
+            <button onclick="selectProductForForm('Panqué Artesanal de Elote')" class="text-xs font-semibold text-tradicion-terracotta hover:text-tradicion-cinnamon flex items-center gap-1">
+              Pedir <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Item 4: Pastel Tres Leches -->
+        <div class="menu-card bg-white p-5 rounded-2xl shadow-md border border-tradicion-arena hover:shadow-lg transition-all duration-300" data-category="pasteles">
+          <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+            <img src="images/pastel_tres_leches.png" alt="Pastel de Tres Leches" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="flex justify-between items-start gap-2 mb-2">
+            <h3 class="font-serif text-lg font-bold text-tradicion-espresso">Pastel de Tres Leches</h3>
+            <span class="px-2 py-0.5 bg-tradicion-caramel/20 text-tradicion-espresso rounded text-[10px] font-bold uppercase shrink-0">Para Compartir</span>
+          </div>
+          <p class="text-xs text-tradicion-coffee/80 leading-relaxed mb-4">
+            Pastel húmedo clásico mexicano de tres leches, decorado con fresas frescas y un toque ligero de crema de vainilla.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-tradicion-arena/60">
+            <div>
+              <span class="text-xs text-tradicion-coffee/65 block">Precio de referencia</span>
+              <span class="font-bold text-tradicion-espresso">Desde $350 (Entero)</span>
+            </div>
+            <button onclick="selectProductForForm('Pastel de Tres Leches')" class="text-xs font-semibold text-tradicion-terracotta hover:text-tradicion-cinnamon flex items-center gap-1">
+              Pedir <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Item 5: Chocolate con Leche -->
+        <div class="menu-card bg-white p-5 rounded-2xl shadow-md border border-tradicion-arena hover:shadow-lg transition-all duration-300" data-category="cafe">
+          <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+            <img src="images/chocolate_con_leche.png" alt="Chocolate con Leche" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="flex justify-between items-start gap-2 mb-2">
+            <h3 class="font-serif text-lg font-bold text-tradicion-espresso">Chocolate con Leche</h3>
+            <span class="px-2 py-0.5 bg-tradicion-caramel/20 text-tradicion-espresso rounded text-[10px] font-bold uppercase shrink-0">Ideal en Frío</span>
+          </div>
+          <p class="text-xs text-tradicion-coffee/80 leading-relaxed mb-4">
+            Chocolate artesanal espumoso batido con molinillo clásico. Puedes pedirlo con leche entera, deslactosada o coco.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-tradicion-arena/60">
+            <div>
+              <span class="text-xs text-tradicion-coffee/65 block">Precio de referencia</span>
+              <span class="font-bold text-tradicion-espresso">Desde $40</span>
+            </div>
+            <button onclick="selectProductForForm('Chocolate con Leche')" class="text-xs font-semibold text-tradicion-terracotta hover:text-tradicion-cinnamon flex items-center gap-1">
+              Pedir <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Item 6: Especial Temporada -->
+        <div class="menu-card bg-white p-5 rounded-2xl shadow-md border border-tradicion-arena hover:shadow-lg transition-all duration-300" data-category="especiales">
+          <div class="overflow-hidden rounded-xl aspect-[16/10] mb-4">
+            <img src="images/pan_de_muerto.png" alt="Bebidas y Pan de Temporada" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+          </div>
+          <div class="flex justify-between items-start gap-2 mb-2">
+            <h3 class="font-serif text-lg font-bold text-tradicion-espresso">Bebidas y Pan de Temporada</h3>
+            <span class="px-2 py-0.5 bg-tradicion-terracotta/10 text-tradicion-terracotta rounded text-[10px] font-bold uppercase shrink-0">De Temporada</span>
+          </div>
+          <p class="text-xs text-tradicion-coffee/80 leading-relaxed mb-4">
+            Pregunta por nuestras creaciones mensuales. Rosca de reyes, Pan de muerto artesanal o café con toques de calabaza.
+          </p>
+          <div class="flex items-center justify-between pt-2 border-t border-tradicion-arena/60">
+            <div>
+              <span class="text-xs text-tradicion-coffee/65 block">Precio de referencia</span>
+              <span class="font-bold text-tradicion-espresso">Sujeto a temporada</span>
+            </div>
+            <button onclick="selectProductForForm('Especiales de Temporada')" class="text-xs font-semibold text-tradicion-terracotta hover:text-tradicion-cinnamon flex items-center gap-1">
+              Pedir <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Demo Note & Bottom Action -->
+      <div class="mt-16 text-center">
+        <p class="text-xs text-tradicion-coffee/70 mb-4 max-w-xl mx-auto italic">
+          * Los ingredientes y opciones están sujetos a disponibilidad del día. Consulta la variedad recién horneada mediante nuestro enlace directo.
+        </p>
+        <a href="#contacto-pedido" class="inline-flex items-center gap-2 text-sm font-semibold text-tradicion-espresso hover:text-tradicion-terracotta transition-colors">
+          <span>¿Quieres algo especial? Haz una consulta directa</span>
+          <i class="fa-solid fa-arrow-down"></i>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRODUCTOS DESTACADOS / EXPERIENCIA SENSORIAL -->
+  <section id="destacados" class="py-20 bg-white border-y border-tradicion-arena/60 fade-in-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Large visual highlight -->
+        <div class="lg:col-span-5 relative">
+          <div class="absolute -inset-2 bg-tradicion-caramel/10 rounded-2xl blur-lg"></div>
+          <div class="relative overflow-hidden rounded-2xl aspect-[4/5] shadow-xl border border-tradicion-arena">
+            <img src="images/charola_pan_dulce.png" 
+                 alt="Selección de Pan Dulce de La Tradición" 
+                 class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-tradicion-espresso/80 via-transparent to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6 text-white space-y-2">
+              <span class="text-xs uppercase font-bold text-tradicion-gold tracking-widest">Lo Recomendado</span>
+              <h3 class="font-serif text-2xl font-bold">La charola tradicional</h3>
+              <p class="text-xs text-white/90 font-light">Crujientes orejas, conchas esponjosas, panqués caseros y donas glaseadas recién preparadas.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Descriptive Copy and Quick Cards -->
+        <div class="lg:col-span-7 space-y-8">
+          
+          <div class="space-y-4">
+            <span class="text-xs uppercase font-bold tracking-widest text-tradicion-caramel block">El Toque Único</span>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-tradicion-espresso">¿Por qué elegir La Tradición?</h2>
+            <div class="w-20 h-1 bg-tradicion-caramel rounded-full"></div>
+            <p class="text-sm text-tradicion-coffee leading-relaxed font-light">
+              Esta propuesta digital busca resaltar el valor y cariño con el que se prepara cada producto. Diseñamos este espacio para que tus clientes locales encuentren la información necesaria en 5 segundos.
+            </p>
+          </div>
+
+          <!-- 4-Grid Benefits -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+            
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-tradicion-caramel/10 flex items-center justify-center text-tradicion-espresso shrink-0">
+                <i class="fa-solid fa-mug-hot"></i>
+              </div>
+              <div class="space-y-1">
+                <h4 class="font-serif font-bold text-base text-tradicion-espresso">Café y Pan diario</h4>
+                <p class="text-xs text-tradicion-coffee/80 leading-relaxed">El mejor acompañante para comenzar tus mañanas o consentirte por la tarde.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-tradicion-caramel/10 flex items-center justify-center text-tradicion-espresso shrink-0">
+                <i class="fa-solid fa-face-smile"></i>
+              </div>
+              <div class="space-y-1">
+                <h4 class="font-serif font-bold text-base text-tradicion-espresso">Ambiente Familiar</h4>
+                <p class="text-xs text-tradicion-coffee/80 leading-relaxed">Un punto de encuentro local en Huixquilucan Centro que sabe a tradición.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-tradicion-caramel/10 flex items-center justify-center text-tradicion-espresso shrink-0">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+              </div>
+              <div class="space-y-1">
+                <h4 class="font-serif font-bold text-base text-tradicion-espresso">Pedidos por WhatsApp</h4>
+                <p class="text-xs text-tradicion-coffee/80 leading-relaxed">Escríbenos directamente para apartar tus panes favoritos o consultar pasteles especiales.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-tradicion-caramel/10 flex items-center justify-center text-tradicion-espresso shrink-0">
+                <i class="fa-solid fa-qrcode"></i>
+              </div>
+              <div class="space-y-1">
+                <h4 class="font-serif font-bold text-base text-tradicion-espresso">Código QR en local</h4>
+                <p class="text-xs text-tradicion-coffee/80 leading-relaxed">Permite a tus clientes escanear la carta directamente en la mesa, agilizando el servicio.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="pt-4 border-t border-tradicion-arena/60">
+            <a href="#contacto-pedido" class="inline-flex items-center gap-2 bg-tradicion-espresso hover:bg-tradicion-coffee text-white font-medium px-6 py-3 rounded-xl transition-all duration-300">
+              <i class="fa-brands fa-whatsapp text-lg"></i>
+              <span>Consultar Pasteles o Pedidos Especiales</span>
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ESPECIAL DEL DÍA / BANNER -->
+  <section class="py-16 bg-gradient-to-br from-tradicion-coffee to-tradicion-espresso text-white relative overflow-hidden">
+    <!-- Wheat outline background -->
+    <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-between">
+      <i class="fa-solid fa-wheat-awn text-[20rem] -translate-x-1/4 rotate-12"></i>
+      <i class="fa-solid fa-mug-hot text-[20rem] translate-x-1/4 -rotate-12"></i>
+    </div>
+    
+    <div class="max-w-5xl mx-auto px-4 text-center space-y-6 relative z-10">
+      <span class="inline-block bg-tradicion-gold/20 text-tradicion-gold text-xs uppercase font-bold tracking-widest px-3 py-1 rounded-full border border-tradicion-gold/30">
+        Especial de Hoy
+      </span>
+      <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
+        Concha Recién Horneada + Café de Olla
+      </h2>
+      <p class="text-sm sm:text-base text-tradicion-arena/80 max-w-xl mx-auto font-light leading-relaxed">
+        Disfruta la combinación perfecta de nuestra concha clásica esponjosa (vainilla o chocolate) acompañada de un café de olla tradicional calientito.
+      </p>
+      
+      <div class="pt-4 flex justify-center gap-4 flex-wrap">
+        <div class="bg-white/10 backdrop-blur-sm border border-white/10 px-6 py-3 rounded-xl">
+          <span class="block text-[10px] text-tradicion-gold font-bold uppercase tracking-wider">Precio Promo referencial</span>
+          <span class="font-serif text-xl font-bold">Desde $49.00</span>
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <button onclick="selectProductForForm('Especial del Día (Concha + Café de Olla)')" 
+                class="inline-flex items-center gap-2 bg-tradicion-caramel hover:bg-tradicion-caramel/90 text-tradicion-espresso px-6 py-3 rounded-xl font-semibold transition-all duration-300">
+          <i class="fa-brands fa-whatsapp text-lg"></i>
+          <span>Consultar Disponibilidad de Hoy</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERÍA CON LIGHTBOX -->
+  <section id="galeria" class="py-20 bg-tradicion-cream fade-in-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+        <span class="text-xs uppercase font-bold tracking-widest text-tradicion-caramel block">El Arte del Sabor</span>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-tradicion-espresso">Galería de Sabores</h2>
+        <div class="w-24 h-1 bg-tradicion-caramel mx-auto rounded-full"></div>
+        <p class="text-sm text-tradicion-coffee/80">
+          Un vistazo a la calidez y a las delicias que se pueden mostrar. Da clic en cualquier imagen para ampliarla.
+        </p>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        
+        <div class="gallery-item overflow-hidden rounded-2xl aspect-square shadow-sm border border-tradicion-arena/80 cursor-pointer relative group" onclick="openLightbox(this)">
+          <img src="images/conchas_mexicanas.png" alt="Conchas Tradicionales de la Casa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <i class="fa-solid fa-magnifying-glass-plus text-white text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="gallery-item overflow-hidden rounded-2xl aspect-square shadow-sm border border-tradicion-arena/80 cursor-pointer relative group" onclick="openLightbox(this)">
+          <img src="images/cafe_de_olla.png" alt="Café de Olla en Jarrito de Barro" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <i class="fa-solid fa-magnifying-glass-plus text-white text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="gallery-item overflow-hidden rounded-2xl aspect-square shadow-sm border border-tradicion-arena/80 cursor-pointer relative group" onclick="openLightbox(this)">
+          <img src="images/panque_de_elote.png" alt="Panqué Artesanal de Elote" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <i class="fa-solid fa-magnifying-glass-plus text-white text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="gallery-item overflow-hidden rounded-2xl aspect-square shadow-sm border border-tradicion-arena/80 cursor-pointer relative group" onclick="openLightbox(this)">
+          <img src="images/charola_pan_dulce.png" alt="Charola Tradicional de Pan Dulce" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <i class="fa-solid fa-magnifying-glass-plus text-white text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="gallery-item overflow-hidden rounded-2xl aspect-square shadow-sm border border-tradicion-arena/80 cursor-pointer relative group" onclick="openLightbox(this)">
+          <img src="images/pastel_tres_leches.png" alt="Pastel de Tres Leches con Fresas" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <i class="fa-solid fa-magnifying-glass-plus text-white text-2xl"></i>
+          </div>
+        </div>
+
+        <div class="gallery-item overflow-hidden rounded-2xl aspect-square shadow-sm border border-tradicion-arena/80 cursor-pointer relative group" onclick="openLightbox(this)">
+          <img src="images/chocolate_con_leche.png" alt="Chocolate con Leche Tradicional Batido" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <i class="fa-solid fa-magnifying-glass-plus text-white text-2xl"></i>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LIGHTBOX MODAL CONTAINER -->
+  <div id="lightbox" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-zoom-out" onclick="closeLightbox()">
+    <button class="absolute top-6 right-6 text-white text-4xl hover:text-tradicion-caramel transition-colors" onclick="closeLightbox()">&times;</button>
+    <img id="lightbox-img" class="max-h-[85vh] max-w-[90vw] rounded-lg shadow-2xl transition-all duration-300 scale-95" src="" alt="Ampliado">
+  </div>
+
+  <!-- QR SECCIÓN MOCKUP COMERCIAL -->
+  <section class="py-20 bg-white border-y border-tradicion-arena/60 fade-in-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-tradicion-cream rounded-3xl p-8 md:p-12 border border-tradicion-caramel/20 shadow-xl relative overflow-hidden">
+        
+        <!-- Background graphics -->
+        <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-tradicion-caramel/10 rounded-full blur-xl pointer-events-none"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Copy -->
+          <div class="lg:col-span-7 space-y-6">
+            <span class="inline-block bg-tradicion-olive/15 text-tradicion-olive text-xs uppercase font-bold tracking-widest px-3 py-1 rounded">Valor para tu local</span>
+            <h2 class="font-serif text-3xl font-bold text-tradicion-espresso">Código QR: Menú digital en tus mesas</h2>
+            <p class="text-sm text-tradicion-coffee leading-relaxed">
+              Imagina colocar un código QR en cada mesa del local o en la vitrina de despacho. Tus clientes pueden escanearlo con su celular para ver los productos del día, revisar los pasteles disponibles y enviarte un pedido a tu WhatsApp sin necesidad de cartas impresas que se desgastan.
+            </p>
+            <div class="space-y-3 pt-2">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-tradicion-caramel/20 flex items-center justify-center text-tradicion-espresso text-sm"><i class="fa-solid fa-1"></i></div>
+                <p class="text-xs text-tradicion-coffee font-medium">El cliente escanea el código en su mesa.</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-tradicion-caramel/20 flex items-center justify-center text-tradicion-espresso text-sm"><i class="fa-solid fa-2"></i></div>
+                <p class="text-xs text-tradicion-coffee font-medium">Explora las fotos de panes y bebidas con precios referenciales.</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-tradicion-caramel/20 flex items-center justify-center text-tradicion-espresso text-sm"><i class="fa-solid fa-3"></i></div>
+                <p class="text-xs text-tradicion-coffee font-medium">Te escribe a WhatsApp con su pedido estructurado.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual QR Mockup -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="bg-white p-6 rounded-2xl shadow-lg border border-tradicion-arena/80 max-w-[280px] text-center space-y-4">
+              <span class="block text-[10px] uppercase font-bold tracking-widest text-tradicion-caramel">La Tradición</span>
+              <!-- QR PlaceHolder Image using simple CSS and SVG icon -->
+              <div class="bg-tradicion-cream p-4 rounded-xl border border-dashed border-tradicion-caramel/40 flex flex-col items-center justify-center aspect-square">
+                <i class="fa-solid fa-qrcode text-8xl text-tradicion-espresso mb-2"></i>
+                <span class="text-[9px] text-tradicion-coffee/70">Muestra visual del código QR</span>
+              </div>
+              <div>
+                <p class="font-serif font-bold text-sm text-tradicion-espresso">Escanea el Menú</p>
+                <p class="text-[10px] text-tradicion-coffee/70">Disponible para smartphones</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEÑAS Y OPINIONES -->
+  <section class="py-20 bg-tradicion-cream fade-in-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+        <span class="text-xs uppercase font-bold tracking-widest text-tradicion-caramel block">Opinión de Clientes</span>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-tradicion-espresso">La experiencia de visitarnos</h2>
+        <div class="w-24 h-1 bg-tradicion-caramel mx-auto rounded-full"></div>
+        <p class="text-sm text-tradicion-coffee/80">
+          Espacio dedicado a mostrar testimonios reales para generar confianza a nuevos visitantes en línea.
+        </p>
+      </div>
+
+      <!-- Reviews Grid (Conceptual) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Review Card 1 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-tradicion-arena flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center gap-1 text-tradicion-gold">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <p class="text-xs text-tradicion-coffee/90 leading-relaxed italic">
+              "Espacio reservado para reseñas reales de clientes. Las opiniones y comentarios reales sobre las conchas, panes artesanales o pasteles del negocio pueden integrarse aquí para construir máxima confianza."
+            </p>
+          </div>
+          <div class="pt-6 border-t border-tradicion-arena/60 mt-6 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-tradicion-arena flex items-center justify-center text-tradicion-espresso font-serif font-bold text-xs">C</div>
+            <div>
+              <span class="block text-xs font-semibold text-tradicion-espresso">Cliente verificado</span>
+              <span class="text-[9px] text-tradicion-coffee/65">Reseña conceptual para la demo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Card 2 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-tradicion-arena flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center gap-1 text-tradicion-gold">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <p class="text-xs text-tradicion-coffee/90 leading-relaxed italic">
+              "Las experiencias reales del negocio ayudan a destacar el buen trato familiar y el sabor del café caliente. Próximamente se sincronizarán o copiarán opiniones destacadas verificadas de Google Maps."
+            </p>
+          </div>
+          <div class="pt-6 border-t border-tradicion-arena/60 mt-6 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-tradicion-arena flex items-center justify-center text-tradicion-espresso font-serif font-bold text-xs">V</div>
+            <div>
+              <span class="block text-xs font-semibold text-tradicion-espresso">Visitante local</span>
+              <span class="text-[9px] text-tradicion-coffee/65">Reseña conceptual para la demo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Card 3 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-tradicion-arena flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center gap-1 text-tradicion-gold">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+            <p class="text-xs text-tradicion-coffee/90 leading-relaxed italic">
+              "Espacio para destacar el rating de 4.5 estrellas del local. La Panadería / Cafetería 'La Tradición' se ubica con muy buena reputación en la zona centro de Huixquilucan."
+            </p>
+          </div>
+          <div class="pt-6 border-t border-tradicion-arena/60 mt-6 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-tradicion-arena flex items-center justify-center text-tradicion-espresso font-serif font-bold text-xs">H</div>
+            <div>
+              <span class="block text-xs font-semibold text-tradicion-espresso">Huixquilucan local</span>
+              <span class="text-[9px] text-tradicion-coffee/65">Reseña conceptual para la demo</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- UBICACIÓN & CONTACTO (LEAFLET INTERACTIVE MAP) -->
+  <section id="ubicacion" class="py-20 bg-white border-t border-tradicion-arena/60 fade-in-section">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Info column -->
+        <div class="lg:col-span-5 space-y-6">
+          <span class="text-xs uppercase font-bold tracking-widest text-tradicion-caramel block">¿Dónde encontrarnos?</span>
+          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-tradicion-espresso">Visítanos en Huixquilucan Centro</h2>
+          <div class="w-20 h-1 bg-tradicion-caramel rounded-full"></div>
+          
+          <div class="space-y-4 pt-2">
+            
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-location-dot text-tradicion-terracotta text-lg mt-0.5"></i>
+              <div>
+                <span class="block font-bold text-sm text-tradicion-espresso">Dirección Referencial</span>
+                <p class="text-xs text-tradicion-coffee leading-relaxed">
+                  Lic. Primo de Verdad 21, San Martín, 52760 Huixquilucan de Degollado, Estado de México. <br>
+                  <span class="text-tradicion-caramel font-semibold">(Dirección exacta sujeta a validación)</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-clock text-tradicion-terracotta text-lg mt-0.5"></i>
+              <div>
+                <span class="block font-bold text-sm text-tradicion-espresso">Horario General</span>
+                <p class="text-xs text-tradicion-coffee">
+                  Cierre aproximado: 9:00 P.M. <br>
+                  <span class="text-tradicion-caramel font-semibold">(Horario exacto por confirmar con el negocio)</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-phone text-tradicion-terracotta text-lg mt-0.5"></i>
+              <div>
+                <span class="block font-bold text-sm text-tradicion-espresso">Teléfono Referencial</span>
+                <p class="text-xs text-tradicion-coffee">
+                  55 8284 1488 <br>
+                  <span class="text-tradicion-caramel font-semibold">(Por confirmar)</span>
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="pt-4 flex gap-4 flex-wrap">
+            <a href="https://maps.google.com/?q=Lic.+Primo+de+Verdad+21,+San+Martín,+Huixquilucan" 
+               target="_blank" 
+               class="inline-flex items-center gap-2 bg-tradicion-espresso hover:bg-tradicion-coffee text-white px-5 py-2.5 rounded-xl font-medium text-xs transition-colors shadow-sm">
+              <i class="fa-solid fa-map-location-dot"></i>
+              <span>Abrir en Google Maps</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Leaflet Map Integration -->
+        <div class="lg:col-span-7">
+          <div class="bg-tradicion-cream p-3 rounded-2xl shadow-lg border border-tradicion-arena/80">
+            <div id="map" class="shadow-inner"></div>
+            <div class="mt-2 text-center">
+              <span class="text-[10px] text-tradicion-coffee/70 italic">Mapa referencial de San Martín / Centro Huixquilucan.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULARIO DE CONSULTA / PEDIDO Y WHATSAPP DINÁMICO -->
+  <section id="contacto-pedido" class="py-20 bg-tradicion-cream border-t border-tradicion-arena/60 fade-in-section">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-tradicion-arena">
+        
+        <!-- Form Header -->
+        <div class="text-center space-y-4 mb-8">
+          <span class="text-xs uppercase font-bold tracking-widest text-tradicion-caramel block">¿Tienes una duda o quieres apartar tu pan?</span>
+          <h2 class="font-serif text-3xl font-bold text-tradicion-espresso">Consulta Disponibilidad</h2>
+          <div class="w-20 h-1 bg-tradicion-caramel mx-auto rounded-full"></div>
+          <p class="text-xs text-tradicion-coffee/80 leading-relaxed">
+            Completa los datos para armar un mensaje rápido de WhatsApp. Te redirigirá de inmediato para consultar con el local.
+          </p>
+        </div>
+
+        <!-- Form Elements -->
+        <form id="whatsapp-order-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Name Input -->
+            <div class="space-y-2">
+              <label for="client-name" class="block text-xs font-bold text-tradicion-espresso uppercase tracking-wider">Tu Nombre</label>
+              <input type="text" id="client-name" required placeholder="Ej. Ana García" 
+                     class="w-full px-4 py-3 bg-tradicion-cream border border-tradicion-arena rounded-xl text-sm focus:outline-none focus:border-tradicion-caramel focus:ring-1 focus:ring-tradicion-caramel text-tradicion-espresso">
+            </div>
+
+            <!-- Product Select -->
+            <div class="space-y-2">
+              <label for="product-interest" class="block text-xs font-bold text-tradicion-espresso uppercase tracking-wider">Producto de Interés</label>
+              <select id="product-interest" required 
+                      class="w-full px-4 py-3 bg-tradicion-cream border border-tradicion-arena rounded-xl text-sm focus:outline-none focus:border-tradicion-caramel focus:ring-1 focus:ring-tradicion-caramel text-tradicion-espresso">
+                <option value="" disabled selected>Selecciona una opción...</option>
+                <option value="Conchas Tradicionales">Conchas Tradicionales</option>
+                <option value="Café de Olla con Canela">Café de Olla con Canela</option>
+                <option value="Panqué Artesanal de Elote">Panqué Artesanal de Elote</option>
+                <option value="Pastel de Tres Leches">Pastel de Tres Leches</option>
+                <option value="Chocolate con Leche">Chocolate con Leche</option>
+                <option value="Especiales de Temporada">Especiales de Temporada</option>
+                <option value="Especial del Día (Concha + Café de Olla)">Especial de Hoy (Concha + Café de Olla)</option>
+                <option value="Consulta General">Consulta General / Otro Producto</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <!-- Quantity -->
+            <div class="space-y-2">
+              <label for="product-qty" class="block text-xs font-bold text-tradicion-espresso uppercase tracking-wider">Cantidad Aprox.</label>
+              <input type="number" id="product-qty" min="1" max="100" value="1" required 
+                     class="w-full px-4 py-3 bg-tradicion-cream border border-tradicion-arena rounded-xl text-sm focus:outline-none focus:border-tradicion-caramel focus:ring-1 focus:ring-tradicion-caramel text-tradicion-espresso">
+            </div>
+
+            <!-- Additional Message -->
+            <div class="space-y-2 sm:col-span-2">
+              <label for="extra-notes" class="block text-xs font-bold text-tradicion-espresso uppercase tracking-wider">Mensaje Adicional / Indicaciones</label>
+              <input type="text" id="extra-notes" placeholder="Ej. De chocolate, para recoger a las 6 pm..." 
+                     class="w-full px-4 py-3 bg-tradicion-cream border border-tradicion-arena rounded-xl text-sm focus:outline-none focus:border-tradicion-caramel focus:ring-1 focus:ring-tradicion-caramel text-tradicion-espresso">
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-4">
+            <button type="submit" 
+                    class="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+              <i class="fa-brands fa-whatsapp text-xl"></i>
+              <span>Enviar Consulta por WhatsApp</span>
+            </button>
+          </div>
+
+        </form>
+
+        <p class="text-[10px] text-center text-tradicion-coffee/70 mt-4 leading-relaxed">
+          * Nota de Demo: Al hacer clic se abrirá WhatsApp Web o la App con un mensaje prellenado que contiene tus respuestas.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL (EL VALOR DE TU MENÚ) -->
+  <section class="py-24 bg-tradicion-espresso text-white text-center relative overflow-hidden">
+    <div class="max-w-4xl mx-auto px-4 space-y-8 relative z-10">
+      
+      <span class="text-xs uppercase font-bold tracking-widest text-tradicion-gold block">Potencial Comercial</span>
+      
+      <h2 class="font-serif text-4xl sm:text-5xl font-bold leading-tight">
+        Tu presencia digital puede verse así
+      </h2>
+      
+      <p class="text-sm sm:text-base text-tradicion-arena/85 max-w-xl mx-auto font-light leading-relaxed">
+        Una solución profesional, elegante y fácil de usar para La Tradición. Permite que tus clientes vean tus productos desde su smartphone, escaneen el QR en tu local o te manden un pedido por WhatsApp en un solo clic.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+        <a href="https://wa.me/525582841488?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
+           target="_blank" 
+           class="inline-flex items-center justify-center px-8 py-4 bg-tradicion-caramel hover:bg-tradicion-caramel/90 text-tradicion-espresso font-semibold rounded-xl transition-all shadow-md">
+          <i class="fa-brands fa-whatsapp text-lg mr-2"></i>
+          <span>WhatsApp Referencial</span>
+        </a>
+        <a href="#menu-interactivo" 
+           class="inline-flex items-center justify-center px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl border border-white/20 transition-all">
+          <span>Ver Menú Digital</span>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#2B1B15] text-[#D8C4BC] py-12 px-4 border-t border-tradicion-espresso/40">
+    <div class="max-w-7xl mx-auto space-y-8">
+      
+      <!-- Brand & Quick info -->
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6 border-b border-white/5 pb-8">
+        <div class="text-center md:text-left">
+          <span class="font-serif text-2xl font-bold text-white block">La Tradición</span>
+          <span class="text-[10px] uppercase tracking-wider text-tradicion-caramel">Panadería · Cafetería · Huixquilucan</span>
+        </div>
+        
+        <!-- Social Reference Icons -->
+        <div class="flex gap-4">
+          <a href="https://www.facebook.com/search/top?q=Panader%C3%ADa%20La%20Tradici%C3%B3n" target="_blank" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors" title="Facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+          <a href="https://www.instagram.com/panalatradicion" target="_blank" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors" title="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Legal disclaimer & Agency footer -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs leading-relaxed font-light">
+        <div class="space-y-3">
+          <p class="text-white font-medium">Información de la Propuesta Comercial:</p>
+          <p>
+            Esta página es una demo conceptual de diseño web premium creada para la prospección de presencia digital local. No es un sitio oficial del negocio "La Tradición". Las imágenes son libres de derechos con fines ilustrativos y demostrativos.
+          </p>
+          <p>
+            Los precios, horarios, menús, teléfonos e información oficial de entrega a domicilio mostrados en este prototipo deberán ser validados directamente con los administradores del negocio para su integración final.
+          </p>
+        </div>
+        
+        <div class="flex flex-col md:items-end justify-between gap-4">
+          <div class="md:text-right space-y-1">
+            <p class="text-white font-medium">Desarrollado y Propuesto por:</p>
+            <p class="font-semibold text-tradicion-caramel">ASCK Software</p>
+            <p>Soluciones Digitales Locales Premium</p>
+          </div>
+          <p class="text-[10px] text-[#A08880]">
+            &copy; 2026 La Tradición (Demo Conceptual). Todos los derechos reservados.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- MOBILE STICKY NAVIGATION BAR (Persists on mobile only) -->
+  <div class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-tradicion-arena/80 py-2 px-4 flex justify-around items-center md:hidden shadow-lg">
+    
+    <a href="#menu-interactivo" class="flex flex-col items-center text-tradicion-coffee hover:text-tradicion-terracotta transition-colors">
+      <i class="fa-solid fa-utensils text-lg"></i>
+      <span class="text-[9px] font-medium mt-0.5">Menú</span>
+    </a>
+
+    <a href="https://wa.me/525582841488?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
+       target="_blank" 
+       class="flex flex-col items-center bg-[#25D366] text-white w-12 h-12 rounded-full justify-center shadow-md -translate-y-3 border-4 border-white">
+      <i class="fa-brands fa-whatsapp text-xl"></i>
+    </a>
+
+    <a href="#ubicacion" class="flex flex-col items-center text-tradicion-coffee hover:text-tradicion-terracotta transition-colors">
+      <i class="fa-solid fa-location-dot text-lg"></i>
+      <span class="text-[9px] font-medium mt-0.5">Ubicación</span>
+    </a>
+
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-notification" class="fixed bottom-20 md:bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-tradicion-espresso text-white px-6 py-4 rounded-2xl shadow-2xl border border-tradicion-caramel/30 flex items-center gap-3">
+      <div class="w-8 h-8 rounded-full bg-[#25D366]/20 flex items-center justify-center text-[#25D366]">
+        <i class="fa-brands fa-whatsapp"></i>
+      </div>
+      <div>
+        <p class="text-xs font-bold text-white">¡Mensaje preparado!</p>
+        <p class="text-[10px] text-tradicion-arena/80">Redirigiendo a WhatsApp de consulta...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-xmark');
+      } else {
+        menu.classList.add('hidden');
+        icon.classList.remove('fa-xmark');
+        icon.classList.add('fa-bars');
+      }
+    }
+    
+    document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+
+    // Interactive Menu Filtering
+    function filterMenu(category) {
+      const cards = document.querySelectorAll('.menu-card');
+      const buttons = document.querySelectorAll('#menu-filters button');
+
+      // Update active button styles
+      buttons.forEach(btn => {
+        if (btn.getAttribute('data-category') === category) {
+          btn.classList.add('bg-tradicion-espresso', 'text-white');
+          btn.classList.remove('bg-white', 'text-tradicion-espresso', 'hover:bg-tradicion-arena/50');
+        } else {
+          btn.classList.remove('bg-tradicion-espresso', 'text-white');
+          btn.classList.add('bg-white', 'text-tradicion-espresso', 'hover:bg-tradicion-arena/50');
+        }
+      });
+
+      // Filter cards
+      cards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        if (category === 'todos' || cardCategory === category) {
+          card.style.display = 'block';
+          // Fade in animation
+          setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'scale(1)';
+          }, 50);
+        } else {
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            card.style.display = 'none';
+          }, 300);
+        }
+      });
+    }
+
+    // Connect Menu Item button with Consultation Form
+    function selectProductForForm(productName) {
+      const select = document.getElementById('product-interest');
+      const formSection = document.getElementById('contacto-pedido');
+      const nameInput = document.getElementById('client-name');
+
+      // Set select option value
+      select.value = productName;
+
+      // Scroll to form smoothly
+      formSection.scrollIntoView({ behavior: 'smooth' });
+
+      // Focus client name field
+      setTimeout(() => {
+        nameInput.focus();
+      }, 800);
+    }
+
+    // Dynamic WhatsApp generator from form
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('client-name').value.trim();
+      const product = document.getElementById('product-interest').value;
+      const qty = document.getElementById('product-qty').value;
+      const notes = document.getElementById('extra-notes').value.trim();
+
+      // Number for WhatsApp (using reference number)
+      const phone = "525582841488";
+      
+      // Build dynamic text
+      let text = `Hola, vi el menú de La Tradición. Me interesa consultar disponibilidad de: ${product}. Cantidad aproximada: ${qty}.`;
+      if (notes) {
+        text += ` Indicaciones: ${notes}.`;
+      }
+      text += ` Mi nombre es ${name}.`;
+
+      const encodedText = encodeURIComponent(text);
+      const whatsappUrl = `https://wa.me/${phone}?text=${encodedText}`;
+
+      // Toast notification trigger
+      const toast = document.getElementById('toast-notification');
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      // Redirect after a short delay
+      setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+        
+        // Hide toast again
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('translate-y-20', 'opacity-0');
+        }, 3000);
+      }, 1500);
+    }
+
+    // Lightbox modal logic
+    function openLightbox(item) {
+      const img = item.querySelector('img');
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      
+      lightboxImg.src = img.src;
+      lightbox.classList.remove('hidden');
+      setTimeout(() => {
+        lightboxImg.classList.remove('scale-95');
+        lightboxImg.classList.add('scale-100');
+      }, 50);
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      
+      lightboxImg.classList.remove('scale-100');
+      lightboxImg.classList.add('scale-95');
+      setTimeout(() => {
+        lightbox.classList.add('hidden');
+      }, 200);
+    }
+
+    // Leaflet Interactive Map Initialization
+    // Coordinates for Primo de Verdad 21, San Martin, Huixquilucan
+    const lat = 19.359145;
+    const lng = -99.349645;
+    
+    const map = L.map('map').setView([lat, lng], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Custom marker icon using warm theme colors
+    const customIcon = L.divIcon({
+      className: 'custom-div-icon',
+      html: `<div style="background-color: #E76F51; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"><i class="fa-solid fa-store text-xs"></i></div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 30]
+    });
+
+    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+    marker.bindPopup("<strong style='font-family: serif; color:#3C2A21;'>La Tradición</strong><br/><span style='font-size:11px; color:#4F3B32;'>Lic. Primo de Verdad 21, San Martín.</span>").openPopup();
+
+    // Scroll Fade In Observer (Sutil animations)
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target); // Trigger once
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-in-section').forEach(section => {
+      observer.observe(section);
+      section.classList.add('fade-in-section'); // ensure class is there
+    });
+
+  </script>
+</body>
+</html>
