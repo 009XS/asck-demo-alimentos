@@ -10,7 +10,7 @@
 
 | Sev | Área | Hallazgo | Evidencia | Acción |
 |-----|------|----------|-----------|--------|
-| Media | Assets | Hero (`img` sección #inicio) y favicon usan hotlink externo a `images.unsplash.com` en vez de asset local | `src="https://images.unsplash.com/photo-1555507036-..."`, favicon `href` también Unsplash | Funciona hoy (200 OK, naturalWidth=800 verificado). Riesgo: dependencia externa frágil (puede caducar/404 con el tiempo o fallar sin internet). Recomendado migrar a asset local en iteración futura — no se tocó (no está roto, fuera de mandato de Fase B). |
+| Media | Assets | Hero (`img` sección #inicio) usa hotlink externo a `images.unsplash.com` en vez de asset local | `src="https://images.unsplash.com/photo-1555507036-..."` | Riesgo: dependencia externa frágil. **Favicon resuelto 2026-07-24**: ahora es SVG local propio (`images/favicon.svg`, hogaza con paleta del sitio) — el anterior era hotlink Unsplash bloqueado por la CSP del VPS. El hero sigue pendiente de migrar a asset local. |
 | Baja | Consola | Advertencia `cdn.tailwindcss.com should not be used in production` | Consola del navegador (2 warnings) | Esperado en demo con CDN; no bloquea funcionalidad. Documentado, no requiere acción para esta fase. |
 | Info | Negocio | Número de WhatsApp `525582841488` usado en 3 CTAs + generador dinámico del formulario | `wa.me/525582841488` | El propio footer ya declara "teléfonos... deberán ser validados directamente con los administradores del negocio". Pendiente de dato real del negocio. |
 | Info | CDNs | Tailwind, Font Awesome, Google Fonts, Leaflet CSS/JS | Todas responden 200 (verificado con fetch); mapa Leaflet renderiza tiles de OpenStreetMap correctamente | Sin caídos. |
@@ -23,8 +23,8 @@
 ## Verificación (servidor de prueba, puerto 4131)
 
 - Consola: 0 errores, solo advisory de Tailwind CDN (no es error).
-- Network: 0 requests fallidas. Imágenes locales (7/7) y externas (hero Unsplash, favicon, tiles OSM) devuelven 200.
-- `naturalWidth` de todas las `<img>` visibles > 0 (la única en 0 es `#lightbox-img`, que es un placeholder oculto con `src=""` por diseño, se llena al abrir la galería).
+- Network: 0 requests fallidas. Imágenes locales (7/7) y externas (hero Unsplash, tiles OSM) devuelven 200; el favicon es local desde 2026-07-24.
+- `naturalWidth` de todas las `<img>` visibles > 0 (la única en 0 era `#lightbox-img`, placeholder oculto que se llena al abrir la galería; el 2026-07-24 se le retiró el `src=""` para que el navegador no resuelva una petición a la raíz).
 
 ## Pendientes de negocio (no técnicos)
 
