@@ -31,11 +31,11 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Leaflet Map CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Font Awesome Icons (auto-hospedado: la CSP del sitio no permite style-src de cdnjs) -->
+  <link rel="stylesheet" href="vendor/css/fontawesome.css">
+
+  <!-- Leaflet Map CSS (auto-hospedado: la CSP del sitio no permite style-src de unpkg) -->
+  <link rel="stylesheet" href="vendor/css/leaflet.css"/>
 
   <script>
     tailwind.config = {
@@ -183,7 +183,7 @@
 
         <!-- CTA Action -->
         <div class="hidden md:flex items-center gap-4">
-          <a href="https://wa.me/525582841488?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
+          <a href="https://wa.me/525525268475?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
              target="_blank" 
              class="inline-flex items-center gap-2 bg-[#25D366]/90 hover:bg-[#128C7E] text-white px-5 py-2.5 rounded-full font-medium text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 duration-200">
             <i class="fa-brands fa-whatsapp text-lg"></i>
@@ -210,7 +210,7 @@
       <a href="#galeria" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg text-base font-medium text-tradicion-espresso hover:bg-tradicion-arena/50 transition-colors">Galería</a>
       <a href="#ubicacion" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg text-base font-medium text-tradicion-espresso hover:bg-tradicion-arena/50 transition-colors">Ubicación</a>
       <div class="pt-4 border-t border-tradicion-arena/60">
-        <a href="https://wa.me/525582841488?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
+        <a href="https://wa.me/525525268475?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
            target="_blank" 
            class="flex items-center justify-center gap-2 bg-[#25D366] text-white px-5 py-3 rounded-xl font-medium shadow-md">
           <i class="fa-brands fa-whatsapp text-lg"></i>
@@ -1084,7 +1084,7 @@
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-        <a href="https://wa.me/525582841488?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
+        <a href="https://wa.me/525525268475?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
            target="_blank" 
            class="inline-flex items-center justify-center px-8 py-4 bg-tradicion-caramel hover:bg-tradicion-caramel/90 text-tradicion-espresso font-semibold rounded-xl transition-all shadow-md">
           <i class="fa-brands fa-whatsapp text-lg mr-2"></i>
@@ -1156,7 +1156,7 @@
       <span class="text-[9px] font-medium mt-0.5">Menú</span>
     </a>
 
-    <a href="https://wa.me/525582841488?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
+    <a href="https://wa.me/525525268475?text=Hola%2C%20vi%20el%20men%C3%BA%20de%20La%20Tradici%C3%B3n%20y%20me%20gustar%C3%ADa%20pedir%20informaci%C3%B3n%20sobre%20productos%20disponibles." 
        target="_blank" 
        class="flex flex-col items-center bg-[#25D366] text-white w-12 h-12 rounded-full justify-center shadow-md -translate-y-3 border-4 border-white">
       <i class="fa-brands fa-whatsapp text-xl"></i>
@@ -1268,7 +1268,7 @@
       const notes = document.getElementById('extra-notes').value.trim();
 
       // Number for WhatsApp (using reference number)
-      const phone = "525582841488";
+      const phone = "525525268475";
       
       // Build dynamic text
       let text = `Hola, vi el menú de La Tradición. Me interesa consultar disponibilidad de: ${product}. Cantidad aproximada: ${qty}.`;
