@@ -936,7 +936,7 @@
               <div>
                 <span class="block font-bold text-sm text-tradicion-espresso">Dirección Referencial</span>
                 <p class="text-xs text-tradicion-coffee leading-relaxed">
-                  Lic. Primo de Verdad 21, San Martín, 52760 Huixquilucan de Degollado, Estado de México. <br>
+                  San Martín, Huixquilucan, Estado de México. <br>
                   <span class="text-tradicion-caramel font-semibold">(Dirección exacta sujeta a validación)</span>
                 </p>
               </div>
@@ -958,7 +958,7 @@
               <div>
                 <span class="block font-bold text-sm text-tradicion-espresso">Teléfono Referencial</span>
                 <p class="text-xs text-tradicion-coffee">
-                  55 8284 1488 <br>
+                  Por confirmar con el negocio <br>
                   <span class="text-tradicion-caramel font-semibold">(Por confirmar)</span>
                 </p>
               </div>
@@ -1115,7 +1115,7 @@
           <a href="https://www.facebook.com/search/top?q=Panader%C3%ADa%20La%20Tradici%C3%B3n" target="_blank" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors" title="Facebook">
             <i class="fa-brands fa-facebook-f"></i>
           </a>
-          <a href="https://www.instagram.com/panalatradicion" target="_blank" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors" title="Instagram">
+          <a href="#" target="_blank" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-colors" title="Instagram">
             <i class="fa-brands fa-instagram"></i>
           </a>
         </div>
@@ -1323,11 +1323,11 @@
     }
 
     // Leaflet Interactive Map Initialization
-    // Coordinates for Primo de Verdad 21, San Martin, Huixquilucan
-    const lat = 19.359145;
-    const lng = -99.349645;
+    // Coordenadas aproximadas de la zona (demo: no señala un local real)
+    const lat = 19.359;
+    const lng = -99.350;
     
-    const map = L.map('map').setView([lat, lng], 16);
+    const map = L.map('map').setView([lat, lng], 14);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -1342,7 +1342,7 @@
     });
 
     const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
-    marker.bindPopup("<strong style='font-family: serif; color:#3C2A21;'>La Tradición</strong><br/><span style='font-size:11px; color:#4F3B32;'>Lic. Primo de Verdad 21, San Martín.</span>").openPopup();
+    marker.bindPopup("<strong style='font-family: serif; color:#3C2A21;'>La Tradición</strong><br/><span style='font-size:11px; color:#4F3B32;'>Zona San Martín, Huixquilucan.</span>").openPopup();
 
     // Scroll Fade In Observer (Sutil animations)
     const observerOptions = {
